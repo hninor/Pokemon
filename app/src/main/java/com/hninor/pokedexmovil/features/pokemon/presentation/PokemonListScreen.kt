@@ -23,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,7 +49,7 @@ fun PokemonListScreen() {
     val isPaginationLoading by viewModel.isPaginationLoading.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val filteredPokemonList by viewModel.filteredPokemonList.collectAsState()
-
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
 
     Scaffold(topBar = { TopAppBar(title = { Text("Pokémon List") }) }) {
         when (uiState) {
@@ -59,6 +60,8 @@ fun PokemonListScreen() {
                 viewModel::loadMorePokemon,
                 searchQuery,
                 viewModel::onSearchQueryChanged,
+                isRefreshing,
+                viewModel::refreshPokemonList,
                 modifier = Modifier.padding(it)
             )
 
@@ -68,7 +71,6 @@ fun PokemonListScreen() {
         }
     }
 }
-
 @Composable
 fun PokemonList(
     pokemonList: List<Pokemon>,
@@ -76,6 +78,8 @@ fun PokemonList(
     onLoadMorePokemon: () -> Unit,
     searchQuery: String,
     onSearchQuery: (String) -> Unit,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -84,38 +88,47 @@ fun PokemonList(
         SearchBar(query = searchQuery, onQueryChanged = onSearchQuery)
 
         Spacer(modifier = Modifier.padding(8.dp))
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2), // Two columns
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(pokemonList) { pokemon ->
-                PokemonItem(pokemon)
-            }
 
-            if (searchQuery.isEmpty()) {
-                item {
-                    if (isPaginationLoading) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .semantics { testTag = "loading-wheel" },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                color = Color.Red
-                            )
-                        }
-                    } else {
-                        LaunchedEffect(Unit) {
-                            onLoadMorePokemon()
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2), // Two columns
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(pokemonList) { pokemon ->
+                    PokemonItem(pokemon)
+                }
+
+                if (searchQuery.isEmpty()) {
+                    item {
+                        if (isPaginationLoading) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .semantics { testTag = "loading-wheel" },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    color = Color.Red
+                                )
+                            }
+                        } else {
+                            LaunchedEffect(Unit) {
+                                onLoadMorePokemon()
+                            }
                         }
                     }
                 }
-            }
 
+            }
         }
+
     }
 
 }

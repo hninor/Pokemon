@@ -44,6 +44,9 @@ class PokemonListViewModel(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
     val filteredPokemonList: StateFlow<List<Pokemon>> =
         combine(_uiState, _searchQuery) { state, query ->
             if (state is UiState.Success) {
@@ -80,6 +83,22 @@ class PokemonListViewModel(
                     }
                     _isPaginationLoading.value = false
                 }
+        }
+    }
+
+    fun refreshPokemonList() {
+        viewModelScope.launch {
+            _isRefreshing.value = true
+            offset = 0
+            getPokemonListUseCase(offset, limit).collect { result ->
+                result.onSuccess { listResult ->
+                    _uiState.value = UiState.Success(listResult.pokemonList)
+                    _hasMorePages.value = listResult.hasNextPage
+                }.onFailure {
+                    //donothing
+                }
+                _isRefreshing.value = false
+            }
         }
     }
 
