@@ -9,20 +9,49 @@ import com.hninor.pokedexmovil.features.pokemon.data.remote.ApiClient
 import com.hninor.pokedexmovil.features.pokemon.data.remote.PokemonRemoteDataSource
 import com.hninor.pokedexmovil.features.pokemon.data.repository.PokemonRepositoryImpl
 import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
+import com.hninor.pokedexmovil.features.pokemon.domain.use_cases.FilterPokemonUseCase
 import com.hninor.pokedexmovil.features.pokemon.domain.use_cases.GetPokemonListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseCase) : ViewModel() {
-    private val _pokemonList = MutableStateFlow<Result<List<Pokemon>>?>(null)
-    val pokemonList: StateFlow<Result<List<Pokemon>>?> = _pokemonList
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
+sealed class UiState {
+    object Loading : UiState()
+    data class Success(val pokemonList: List<Pokemon>) : UiState()
+    data class Error(val message: String) : UiState()
+}
+
+class PokemonListViewModel(
+    private val getPokemonListUseCase: GetPokemonListUseCase,
+    private val filterPokemonUseCase: FilterPokemonUseCase
+) : ViewModel() {
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState: StateFlow<UiState> = _uiState
+
+    private val _isPaginationLoading = MutableStateFlow(false)
+    val isPaginationLoading: StateFlow<Boolean> = _isPaginationLoading
 
     private val _hasMorePages = MutableStateFlow(true)
     val hasMorePages: StateFlow<Boolean> = _hasMorePages
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
+
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
+
+    val filteredPokemonList: StateFlow<List<Pokemon>> =
+        combine(_uiState, _searchQuery) { state, query ->
+            if (state is UiState.Success) {
+                filterPokemonUseCase(state.pokemonList, query)
+            } else {
+                emptyList()
+            }
+        }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     private var offset = 0
     private val limit = 20
@@ -32,33 +61,38 @@ class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseC
     }
 
     fun loadMorePokemon() {
-        if (_isLoading.value || !_hasMorePages.value) return
+        if (_isPaginationLoading.value || !_hasMorePages.value) return
 
         viewModelScope.launch {
-            _isLoading.value = true
+            _isPaginationLoading.value = true
             getPokemonListUseCase(offset, limit)
                 .collect { result ->
                     result.onSuccess { listResult ->
-                        val currentList = _pokemonList.value?.getOrNull().orEmpty()
-                        _pokemonList.value = Result.success(currentList + listResult.pokemonList)
+                        val currentList =
+                            (_uiState.value as? UiState.Success)?.pokemonList.orEmpty()
+                        _uiState.value = UiState.Success(currentList + listResult.pokemonList)
                         _hasMorePages.value = listResult.hasNextPage
                         offset += limit
                     }.onFailure { error ->
-                        val currentList = _pokemonList.value?.getOrNull().orEmpty()
-                        if (currentList.isEmpty()) {
-                            _pokemonList.value = Result.failure(error)
+                        if (_uiState.value is UiState.Loading) {
+                            _uiState.value = UiState.Error(error.localizedMessage ?: "Unknown error")
                         }
                     }
-                    _isLoading.value = false
+                    _isPaginationLoading.value = false
                 }
         }
+    }
+
+    fun onSearchQueryChanged(query: String) {
+        _searchQuery.value = query
     }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 PokemonListViewModel(
-                    GetPokemonListUseCase(PokemonRepositoryImpl(PokemonRemoteDataSource(ApiClient.create())))
+                    GetPokemonListUseCase(PokemonRepositoryImpl(PokemonRemoteDataSource(ApiClient.create()))),
+                    FilterPokemonUseCase()
                 )
             }
         }

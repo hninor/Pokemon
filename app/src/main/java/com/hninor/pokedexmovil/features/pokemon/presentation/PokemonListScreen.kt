@@ -41,21 +41,24 @@ fun PokemonListScreen() {
     val viewModel: PokemonListViewModel =
         viewModel(factory = PokemonListViewModel.Factory)
 
-    val pokemonState by viewModel.pokemonList.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
 
+    val uiState by viewModel.uiState.collectAsState()
+    val isPaginationLoading by viewModel.isPaginationLoading.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
 
     Scaffold(topBar = { TopAppBar(title = { Text("Pokémon List") }) }) {
-        when {
-            pokemonState == null -> LoadingScreen()
-            pokemonState!!.isSuccess -> PokemonList(
-                pokemonState?.getOrNull()!!,
-                isLoading,
+        when(uiState) {
+            is UiState.Loading-> LoadingScreen()
+            is UiState.Success -> PokemonList(
+                (uiState as UiState.Success).pokemonList,
+                isPaginationLoading,
                 viewModel::loadMorePokemon,
+                searchQuery,
+                viewModel::onSearchQueryChanged,
                 modifier = Modifier.padding(it)
             )
 
-            pokemonState!!.isFailure -> ErrorScreen("Error: ${pokemonState!!.exceptionOrNull()?.message}") {
+            is UiState.Error -> ErrorScreen("Error: ${(uiState as UiState.Error).message}") {
                 viewModel.loadMorePokemon()
             }
         }
@@ -65,14 +68,16 @@ fun PokemonListScreen() {
 @Composable
 fun PokemonList(
     pokemonList: List<Pokemon>,
-    isLoading: Boolean,
+    isPaginationLoading: Boolean,
     onLoadMorePokemon: () -> Unit,
+    searchQuery: String,
+    onSearchQuery: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     Column(modifier = modifier) {
 
-        SearchBar(query = "", onQueryChanged = {})
+        SearchBar(query = searchQuery, onQueryChanged = onSearchQuery)
         
         Spacer(modifier = Modifier.padding(8.dp))
         LazyVerticalGrid(
@@ -86,7 +91,7 @@ fun PokemonList(
             }
 
             item {
-                if (isLoading) {
+                if (isPaginationLoading) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -121,7 +126,8 @@ fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
         placeholder = { Text("Search Pokémon...") },
         leadingIcon = {
             Icon(Icons.Default.Search, contentDescription = "Search Icon")
-        }
+        },
+        singleLine = true
     )
 }
 @Composable
