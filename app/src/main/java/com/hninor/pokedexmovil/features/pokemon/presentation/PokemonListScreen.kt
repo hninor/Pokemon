@@ -28,6 +28,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -139,6 +140,7 @@ fun PokemonList(
 @Composable
 fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
     TextField(
         value = query,
         onValueChange = onQueryChanged,
@@ -154,6 +156,7 @@ fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
             if (query.isNotEmpty()) { // ✅ Show only when query is not empty
                 IconButton(onClick = {
                     onQueryChanged("")
+                    focusManager.clearFocus()
                     keyboardController?.hide()
                 }) {
                     Icon(Icons.Default.Close, contentDescription = "Clear Search")
@@ -162,6 +165,7 @@ fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
         },
         singleLine = true
     )
+
 }
 
 @Composable

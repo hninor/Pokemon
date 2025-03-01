@@ -64,7 +64,7 @@ class PokemonListViewModel(
     }
 
     fun loadMorePokemon() {
-        if (_isPaginationLoading.value || !_hasMorePages.value) return
+        if (_isPaginationLoading.value || !_hasMorePages.value || _isRefreshing.value) return
 
         viewModelScope.launch {
             _isPaginationLoading.value = true
@@ -87,6 +87,7 @@ class PokemonListViewModel(
     }
 
     fun refreshPokemonList() {
+        if (isPaginationLoading.value) return
         viewModelScope.launch {
             _isRefreshing.value = true
             offset = 0
