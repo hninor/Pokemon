@@ -5,12 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.hninor.pokedexmovil.features.pokemon.data.model.PokemonDetailResponse
 import com.hninor.pokedexmovil.features.pokemon.data.remote.ApiClient
 import com.hninor.pokedexmovil.features.pokemon.data.remote.PokemonRemoteDataSource
 import com.hninor.pokedexmovil.features.pokemon.data.repository.PokemonRepositoryImpl
 import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
-import com.hninor.pokedexmovil.features.pokemon.domain.model.PokemonListResult
 import com.hninor.pokedexmovil.features.pokemon.domain.use_cases.GetPokemonListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -46,7 +44,10 @@ class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseC
                         _hasMorePages.value = listResult.hasNextPage
                         offset += limit
                     }.onFailure { error ->
-                        _pokemonList.value = Result.failure(error)
+                        val currentList = _pokemonList.value?.getOrNull().orEmpty()
+                        if (currentList.isEmpty()) {
+                            _pokemonList.value = Result.failure(error)
+                        }
                     }
                     _isLoading.value = false
                 }
