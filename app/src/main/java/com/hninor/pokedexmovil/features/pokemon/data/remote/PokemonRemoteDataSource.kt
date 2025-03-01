@@ -22,7 +22,7 @@ class PokemonRemoteDataSource(private val api: PokeApiService) {
                 Pokemon(
                     id = response.id,
                     name = response.name,
-                    imageUrl = response.sprites.front_default,
+                    imageUrl = response.sprites.other.officialArtwork.front_default,
                     types = response.types.map { it.type.name }
                 )
             }

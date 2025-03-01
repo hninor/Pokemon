@@ -1,5 +1,7 @@
 package com.hninor.pokedexmovil.features.pokemon.data.model
 
+import com.google.gson.annotations.SerializedName
+
 data class PokemonDetailResponse(
     val id: Int,
     val name: String,
@@ -7,7 +9,11 @@ data class PokemonDetailResponse(
     val types: List<PokemonType>
 )
 
-data class Sprites(val front_default: String)
+data class Sprites(val front_default: String, val other: OtherSprites)
+
+data class OtherSprites(@SerializedName("official-artwork") val officialArtwork: OfficialArtwork)
+
+data class OfficialArtwork(val front_default: String)
 
 data class PokemonType(val type: TypeName)
 

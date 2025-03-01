@@ -2,8 +2,9 @@ package com.hninor.pokedexmovil.features.pokemon.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -24,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.hninor.pokedexmovil.R
-import com.hninor.pokedexmovil.features.pokemon.data.model.PokemonDetailResponse
 import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,7 +62,13 @@ fun PokemonList(
     modifier: Modifier = Modifier
 ) {
 
-    LazyColumn(modifier = modifier) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2), // Two columns
+        modifier = modifier,
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         items(pokemonList) { pokemon ->
             PokemonItem(pokemon)
         }
@@ -92,29 +98,32 @@ fun PokemonList(
 fun PokemonItem(pokemon: Pokemon) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
+                 .padding(8.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+
+        ) {
             AsyncImage(
                 model = pokemon.imageUrl,
                 contentDescription = pokemon.name,
                 modifier = Modifier.size(80.dp)
             )
-            Column(modifier = Modifier.padding(8.dp)) {
-                Text(text = pokemon.name, fontWeight = FontWeight.Bold)
-                Row {
-                    pokemon.types.forEach { type ->
-                        Text(
-                            text = type,
-                            modifier = Modifier
-                                .padding(end = 4.dp)
-                                .background(Color.LightGray)
-                                .padding(4.dp)
-                        )
-                    }
+
+            Text(text = pokemon.name, fontWeight = FontWeight.Bold)
+            Row {
+                pokemon.types.forEach { type ->
+                    Text(
+                        text = type,
+                        modifier = Modifier
+                            .padding(end = 4.dp)
+                            .background(Color.LightGray)
+                            .padding(4.dp)
+                    )
                 }
             }
+
         }
     }
 }

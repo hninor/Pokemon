@@ -21,7 +21,7 @@ class PokemonListViewModel(private val getPokemonListUseCase: GetPokemonListUseC
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val _hasMorePages = MutableStateFlow(true) // Tracks if more pages exist
+    private val _hasMorePages = MutableStateFlow(true)
     val hasMorePages: StateFlow<Boolean> = _hasMorePages
 
     private var offset = 0
