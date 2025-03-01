@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.hninor.pokedexmovil.features.pokemon.presentation
 
 import androidx.compose.foundation.background
@@ -5,13 +7,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -62,38 +70,58 @@ fun PokemonList(
     modifier: Modifier = Modifier
 ) {
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2), // Two columns
-        modifier = modifier,
-        contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(pokemonList) { pokemon ->
-            PokemonItem(pokemon)
-        }
+    Column(modifier = modifier) {
 
-        item {
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .semantics { testTag = "loading-wheel" },
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = Color.Red
-                    )
-                }
-            } else {
-                LaunchedEffect(Unit) {
-                    onLoadMorePokemon()
+        SearchBar(query = "", onQueryChanged = {})
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2), // Two columns
+            contentPadding = PaddingValues(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(pokemonList) { pokemon ->
+                PokemonItem(pokemon)
+            }
+
+            item {
+                if (isLoading) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .semantics { testTag = "loading-wheel" },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = Color.Red
+                        )
+                    }
+                } else {
+                    LaunchedEffect(Unit) {
+                        onLoadMorePokemon()
+                    }
                 }
             }
         }
     }
+
 }
 
+
+@Composable
+fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
+    TextField(
+        value = query,
+        onValueChange = onQueryChanged,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp)
+            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp)),
+        placeholder = { Text("Search Pokémon...") },
+        leadingIcon = {
+            Icon(Icons.Default.Search, contentDescription = "Search Icon")
+        }
+    )
+}
 @Composable
 fun PokemonItem(pokemon: Pokemon) {
     Card(
@@ -101,7 +129,9 @@ fun PokemonItem(pokemon: Pokemon) {
                  .padding(8.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
