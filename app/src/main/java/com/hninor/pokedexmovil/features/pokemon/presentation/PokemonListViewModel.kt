@@ -94,6 +94,7 @@ class PokemonListViewModel(
                 result.onSuccess { listResult ->
                     _uiState.value = UiState.Success(listResult.pokemonList)
                     _hasMorePages.value = listResult.hasNextPage
+                    offset += limit
                 }.onFailure {
                     //donothing
                 }
