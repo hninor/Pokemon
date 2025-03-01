@@ -73,6 +73,8 @@ fun PokemonList(
     Column(modifier = modifier) {
 
         SearchBar(query = "", onQueryChanged = {})
+        
+        Spacer(modifier = Modifier.padding(8.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(2), // Two columns
             contentPadding = PaddingValues(8.dp),
