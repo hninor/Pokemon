@@ -28,6 +28,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
@@ -71,6 +72,7 @@ fun PokemonListScreen() {
         }
     }
 }
+
 @Composable
 fun PokemonList(
     pokemonList: List<Pokemon>,
@@ -91,7 +93,7 @@ fun PokemonList(
 
         PullToRefreshBox(
             isRefreshing = isRefreshing,
-            onRefresh = onRefresh,
+            onRefresh = { if (searchQuery.isEmpty()) onRefresh() },
             modifier = Modifier.fillMaxWidth()
         ) {
 
@@ -136,6 +138,7 @@ fun PokemonList(
 
 @Composable
 fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     TextField(
         value = query,
         onValueChange = onQueryChanged,
@@ -149,7 +152,10 @@ fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
         },
         trailingIcon = {
             if (query.isNotEmpty()) { // ✅ Show only when query is not empty
-                IconButton(onClick = { onQueryChanged("") }) {
+                IconButton(onClick = {
+                    onQueryChanged("")
+                    keyboardController?.hide()
+                }) {
                     Icon(Icons.Default.Close, contentDescription = "Clear Search")
                 }
             }
