@@ -2,6 +2,7 @@ package com.hninor.pokedexmovil.features.pokemon.data.remote
 
 import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
 import com.hninor.pokedexmovil.features.pokemon.domain.model.PokemonListResult
+import com.hninor.pokedexmovil.features.pokemon.domain.model.PokemonStat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -23,7 +24,15 @@ class PokemonRemoteDataSource(private val api: PokeApiService) {
                     id = response.id,
                     name = response.name,
                     imageUrl = response.sprites.other.officialArtwork.front_default,
-                    types = response.types.map { it.type.name }
+                    types = response.types.map { it.type.name },
+                    sprites = listOfNotNull(
+                        response.sprites.front_default,
+                        response.sprites.back_default,
+                        response.sprites.other.showdown.front_default,
+                        response.sprites.other.showdown.back_default
+                    ),
+                    stats = response.stats.map { PokemonStat(it.stat.name, it.base_stat) },
+                    abilities = response.abilities.map { it.ability.name },
                 )
             }
             emit(Result.success(PokemonListResult(details, hasNextPage)))

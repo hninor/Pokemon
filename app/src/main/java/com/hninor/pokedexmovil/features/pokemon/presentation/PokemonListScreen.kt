@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.hninor.pokedexmovil.features.pokemon.presentation
 
 import androidx.compose.foundation.background
@@ -74,6 +72,7 @@ fun PokemonListScreen() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PokemonList(
     pokemonList: List<Pokemon>,
@@ -206,7 +205,6 @@ fun PokemonItem(pokemon: Pokemon) {
 
 @Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
-    // Display a loading indicator
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -221,7 +219,6 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun ErrorScreen(message: String, retryAction: () -> Unit) {
-    // Display an error message with a retry button
 
     Column(
         modifier = Modifier.fillMaxSize(),
