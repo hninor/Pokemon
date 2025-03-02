@@ -1,6 +1,8 @@
 package com.hninor.pokedexmovil.features.pokemon_detail.presentation
 
 import android.os.Build.VERSION.SDK_INT
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,8 +29,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -70,16 +74,16 @@ fun PokemonDetailScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Pokémon Images
+
             PokemonImagesSection(pokemon)
 
-            // Types
+
             PokemonTypesSection(pokemon.types)
 
-            // Stats
+
             PokemonStatsSection(pokemon.stats)
 
-            // Abilities
+
             PokemonAbilitiesSection(pokemon.abilities)
 
 
@@ -91,6 +95,7 @@ fun PokemonDetailScreen(
 @Composable
 fun PokemonImagesSection(pokemon: Pokemon) {
     val context = LocalContext.current
+
     val gifEnabledLoader = ImageLoader.Builder(context)
         .components {
             if (SDK_INT >= 28) {
@@ -99,6 +104,7 @@ fun PokemonImagesSection(pokemon: Pokemon) {
                 add(GifDecoder.Factory())
             }
         }.build()
+
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         // Main Image
         AsyncImage(
@@ -130,7 +136,9 @@ fun PokemonImagesSection(pokemon: Pokemon) {
 @Composable
 fun PokemonTypesSection(types: List<String>) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         horizontalArrangement = Arrangement.Center
     ) {
         types.forEach { type ->
@@ -149,6 +157,7 @@ fun PokemonTypesSection(types: List<String>) {
 
 @Composable
 fun PokemonStatsSection(stats: List<PokemonStat>) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -159,17 +168,35 @@ fun PokemonStatsSection(stats: List<PokemonStat>) {
         Spacer(modifier = Modifier.height(8.dp))
 
         stats.forEach { stat ->
+
+
+            val animatedProgress by animateFloatAsState(
+                targetValue = stat.value / 100f,
+                animationSpec = tween(durationMillis = 500), label = ""
+            )
+
+            val progressColor = when {
+                stat.value >= 70 -> Color.Green
+                stat.value >= 40 -> Color.Yellow
+                else -> Color.Red
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(stat.name.capitalize(Locale.ROOT), fontWeight = FontWeight.Bold)
+                Text(stat.name, fontWeight = FontWeight.Bold)
                 LinearProgressIndicator(
-                    progress = stat.value / 100f, // Normalize values
-                    modifier = Modifier.fillMaxWidth(0.6f),
-                    color = Color.Green
+                    progress = { animatedProgress },
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                        .height(10.dp)
+                        .clip(RoundedCornerShape(50)), // Smooth rounded edges
+                    color = progressColor,
+                    trackColor = Color.LightGray // Background for better contrast
                 )
                 Text(stat.value.toString())
             }
@@ -190,7 +217,7 @@ fun PokemonAbilitiesSection(abilities: List<String>) {
         Spacer(modifier = Modifier.height(8.dp))
 
         abilities.forEach { ability ->
-            Text("• ${ability.capitalize(Locale.ROOT)}", fontSize = 16.sp)
+            Text("• $ability", fontSize = 16.sp)
         }
     }
 }
