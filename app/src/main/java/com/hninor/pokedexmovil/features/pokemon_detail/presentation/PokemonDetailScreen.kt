@@ -1,5 +1,6 @@
 package com.hninor.pokedexmovil.features.pokemon_detail.presentation
 
+import android.os.Build.VERSION.SDK_INT
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,10 +26,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.ImageLoader
 import coil.compose.AsyncImage
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
 import com.hninor.pokedexmovil.features.pokemon.domain.model.PokemonStat
 import java.util.Locale
@@ -80,6 +86,15 @@ fun PokemonDetailScreen(
 
 @Composable
 fun PokemonImagesSection(pokemon: Pokemon) {
+    val context = LocalContext.current
+    val gifEnabledLoader = ImageLoader.Builder(context)
+        .components {
+            if (SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+        }.build()
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         // Main Image
         AsyncImage(
@@ -95,10 +110,12 @@ fun PokemonImagesSection(pokemon: Pokemon) {
             pokemon.sprites.forEach { spriteUrl ->
                 AsyncImage(
                     model = spriteUrl,
+                    imageLoader = gifEnabledLoader,
                     contentDescription = "Alternate Sprite",
                     modifier = Modifier
                         .size(80.dp)
                         .padding(4.dp)
+
                 )
             }
         }
