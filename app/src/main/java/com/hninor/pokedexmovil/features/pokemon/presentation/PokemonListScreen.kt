@@ -3,6 +3,7 @@ package com.hninor.pokedexmovil.features.pokemon.presentation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -108,11 +109,12 @@ fun PokemonList(
                 }
 
                 if (searchQuery.isEmpty()) {
-                    item {
+                    item(span = { GridItemSpan(2) }) {
                         if (isPaginationLoading) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .padding(16.dp)
                                     .semantics { testTag = "loading-wheel" },
                                 contentAlignment = Alignment.Center
                             ) {
