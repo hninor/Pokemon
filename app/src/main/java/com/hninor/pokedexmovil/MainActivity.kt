@@ -10,6 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.hninor.pokedexmovil.core.compose.AppNavHost
 import com.hninor.pokedexmovil.features.pokemon.data.remote.ApiClient
 import com.hninor.pokedexmovil.features.pokemon.data.remote.PokemonRemoteDataSource
 import com.hninor.pokedexmovil.features.pokemon.data.repository.PokemonRepositoryImpl
@@ -26,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PokemonListScreen()
+                    AppNavHost(navController = rememberNavController())
                 }
             }
         }

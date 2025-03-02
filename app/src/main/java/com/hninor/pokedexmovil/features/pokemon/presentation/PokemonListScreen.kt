@@ -1,6 +1,7 @@
 package com.hninor.pokedexmovil.features.pokemon.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -41,16 +42,14 @@ import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PokemonListScreen() {
-    val viewModel: PokemonListViewModel =
-        viewModel(factory = PokemonListViewModel.Factory)
-
+fun PokemonListScreen(viewModel: PokemonListViewModel, onPokemonClick: (Pokemon) -> Unit) {
 
     val uiState by viewModel.uiState.collectAsState()
     val isPaginationLoading by viewModel.isPaginationLoading.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val filteredPokemonList by viewModel.filteredPokemonList.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
+
 
     Scaffold(topBar = { TopAppBar(title = { Text("Pokémon List") }) }) {
         when (uiState) {
@@ -63,6 +62,7 @@ fun PokemonListScreen() {
                 viewModel::onSearchQueryChanged,
                 isRefreshing,
                 viewModel::refreshPokemonList,
+                onPokemonClick,
                 modifier = Modifier.padding(it)
             )
 
@@ -83,6 +83,7 @@ fun PokemonList(
     onSearchQuery: (String) -> Unit,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
+    onPokemonClick: (Pokemon) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -105,7 +106,7 @@ fun PokemonList(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(pokemonList) { pokemon ->
-                    PokemonItem(pokemon)
+                    PokemonItem(pokemon, onPokemonClick)
                 }
 
                 if (searchQuery.isEmpty()) {
@@ -170,10 +171,11 @@ fun SearchBar(query: String, onQueryChanged: (String) -> Unit) {
 }
 
 @Composable
-fun PokemonItem(pokemon: Pokemon) {
+fun PokemonItem(pokemon: Pokemon, onPokemonClick: (Pokemon) -> Unit) {
     Card(
         modifier = Modifier
             .padding(8.dp)
+            .clickable { onPokemonClick(pokemon) },
     ) {
         Column(
             modifier = Modifier

@@ -1,5 +1,6 @@
 package com.hninor.pokedexmovil.features.pokemon.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -47,6 +48,9 @@ class PokemonListViewModel(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
+    private var _selectedPokemon = MutableStateFlow<Pokemon?>(null)
+    val selectedPokemon: StateFlow<Pokemon?> = _selectedPokemon
+
     val filteredPokemonList: StateFlow<List<Pokemon>> =
         combine(_uiState, _searchQuery) { state, query ->
             if (state is UiState.Success) {
@@ -60,6 +64,7 @@ class PokemonListViewModel(
     private val limit = 20
 
     init {
+        Log.d("PokemonListViewModel", "ViewModel Created: $this")
         loadMorePokemon()
     }
 
@@ -106,6 +111,10 @@ class PokemonListViewModel(
 
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
+    }
+
+    fun selectPokemon(pokemon: Pokemon) {
+        _selectedPokemon.value = pokemon
     }
 
     companion object {

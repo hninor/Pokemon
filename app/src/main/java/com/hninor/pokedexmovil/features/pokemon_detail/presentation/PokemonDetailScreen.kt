@@ -40,6 +40,7 @@ fun PokemonDetailScreen(
     pokemon: Pokemon,
     onBackClick: () -> Unit
 ) {
+
     Scaffold(
         topBar = {
             TopAppBar(
