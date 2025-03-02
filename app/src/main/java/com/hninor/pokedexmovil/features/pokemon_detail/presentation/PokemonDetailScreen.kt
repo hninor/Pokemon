@@ -1,7 +1,9 @@
 package com.hninor.pokedexmovil.features.pokemon_detail.presentation
 
 import android.os.Build.VERSION.SDK_INT
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,7 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -26,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -35,6 +38,7 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.hninor.pokedexmovil.core.getTypeColor
 import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
 import com.hninor.pokedexmovil.features.pokemon.domain.model.PokemonStat
 import java.util.Locale
@@ -70,7 +74,7 @@ fun PokemonDetailScreen(
             PokemonImagesSection(pokemon)
 
             // Types
-            //PokemonTypesSection(pokemon.types)
+            PokemonTypesSection(pokemon.types)
 
             // Stats
             PokemonStatsSection(pokemon.stats)
@@ -123,24 +127,24 @@ fun PokemonImagesSection(pokemon: Pokemon) {
 }
 
 
-/*@Composable
-fun PokemonTypesSection(types: List<PokemonType>) {
+@Composable
+fun PokemonTypesSection(types: List<String>) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
         horizontalArrangement = Arrangement.Center
     ) {
         types.forEach { type ->
             Box(
                 modifier = Modifier
-                    .background(type.color, shape = RoundedCornerShape(8.dp))
+                    .background(getTypeColor(type), shape = RoundedCornerShape(8.dp))
                     .padding(8.dp)
             ) {
-                Text(type.name.capitalize(Locale.ROOT), color = Color.White)
+                Text(type, color = Color.White)
             }
             Spacer(modifier = Modifier.width(8.dp))
         }
     }
-}*/
+}
 
 
 @Composable
