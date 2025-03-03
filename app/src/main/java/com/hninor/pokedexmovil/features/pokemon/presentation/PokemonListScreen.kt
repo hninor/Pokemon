@@ -106,12 +106,13 @@ fun PokemonList(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(pokemonList) { pokemon ->
+                items(pokemonList, key = { pokemon -> pokemon.id }) { pokemon ->
                     PokemonItem(pokemon, onPokemonClick)
                 }
 
-                if (searchQuery.isEmpty()) {
-                    item(span = { GridItemSpan(2) }) {
+
+                item(span = { GridItemSpan(2) }) {
+                    if (searchQuery.isEmpty()) {
                         if (isPaginationLoading) {
                             Box(
                                 modifier = Modifier
@@ -131,6 +132,7 @@ fun PokemonList(
                         }
                     }
                 }
+
 
             }
         }
