@@ -25,7 +25,15 @@ fun AppNavHost(
 
     val pokemon by viewModel.selectedPokemon.collectAsState()
 
-    NavHost(navController, startDestination = "login") {
+
+    val startDestination = if (signInViewModel.userIsAlreadyLogged()) {
+        "pokemon_list"
+    } else {
+        "login"
+    }
+
+
+    NavHost(navController, startDestination = startDestination) {
 
         composable("login") {
             SignInScreen(signInViewModel = signInViewModel) {

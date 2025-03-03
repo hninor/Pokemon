@@ -1,6 +1,5 @@
 package com.hninor.pokedexmovil.features.login.presentation
 
-import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import android.util.Log
@@ -39,5 +38,10 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
 
     fun signOut() {
         googleSignInClient.signOut()
+    }
+
+    fun userIsAlreadyLogged(): Boolean {
+        val account = GoogleSignIn.getLastSignedInAccount(context)
+        return account != null
     }
 }
