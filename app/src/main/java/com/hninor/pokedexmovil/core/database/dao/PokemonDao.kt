@@ -32,12 +32,9 @@ interface PokemonDao {
     suspend fun insertSprites(sprites: List<PokemonSpriteEntity>)
 
 
-    @Query("SELECT * FROM pokemon_table ORDER BY id LIMIT :limit OFFSET :offset")
-    fun getPagedPokemon(limit: Int, offset: Int): Flow<List<PokemonEntity>>
-
     @Transaction
-    @Query("SELECT * FROM pokemon_table WHERE id = :pokemonId")
-    suspend fun getPokemonWithDetails(pokemonId: Int): PokemonWithDetails?
+    @Query("SELECT * FROM pokemon_table ORDER BY id LIMIT :limit OFFSET :offset")
+    fun getPokemonList(limit: Int, offset: Int): Flow<List<PokemonWithDetails>>
 
 
     @Query("DELETE FROM pokemon_table")

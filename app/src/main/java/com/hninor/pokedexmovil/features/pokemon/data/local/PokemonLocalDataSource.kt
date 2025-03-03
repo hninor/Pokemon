@@ -6,11 +6,19 @@ import com.hninor.pokedexmovil.core.database.entities.PokemonEntity
 import com.hninor.pokedexmovil.core.database.entities.PokemonPageEntity
 import com.hninor.pokedexmovil.core.database.entities.PokemonSpriteEntity
 import com.hninor.pokedexmovil.core.database.entities.PokemonStatEntity
+import com.hninor.pokedexmovil.core.database.entities.toDomain
 import com.hninor.pokedexmovil.features.pokemon.data.model.PokemonDetailResponse
+import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class PokemonLocalDataSource(private val pokemonDao: PokemonDao) {
 
-    suspend fun savePokemonList(pokemonList: List<PokemonDetailResponse>, hasNext: Boolean, offset: Int) {
+    suspend fun savePokemonList(
+        pokemonList: List<PokemonDetailResponse>,
+        hasNext: Boolean,
+        offset: Int
+    ) {
         val pokemonEntities = pokemonList.map { pokemon ->
             PokemonEntity(
                 id = pokemon.id,
@@ -61,4 +69,16 @@ class PokemonLocalDataSource(private val pokemonDao: PokemonDao) {
 
         pokemonDao.insertPokemonPage(PokemonPageEntity(offset, hasNext))
     }
+
+    fun getCachedPokemonList(limit: Int, offset: Int): Flow<List<Pokemon>> {
+        return pokemonDao.getPokemonList(limit, offset).map { cachedList ->
+            cachedList.map { it.toDomain() }
+        }
+    }
+
+    suspend fun hasNextPage(offset: Int): Boolean {
+        return pokemonDao.hasNextPage(offset) ?: true
+    }
 }
+
+
