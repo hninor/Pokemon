@@ -78,6 +78,7 @@ class PokemonListViewModel(
 
         if (_uiState.value is UiState.Error) {
             _uiState.value = UiState.Loading
+            _isOffline.value = false
         }
 
         viewModelScope.launch {
