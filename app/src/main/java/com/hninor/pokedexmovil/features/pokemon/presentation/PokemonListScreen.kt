@@ -34,13 +34,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.hninor.pokedexmovil.R
 import com.hninor.pokedexmovil.core.getTypeColor
 import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
-import com.hninor.pokedexmovil.features.pokemon_detail.presentation.PokemonTypesSection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -204,7 +203,12 @@ fun PokemonItem(pokemon: Pokemon, onPokemonClick: (Pokemon) -> Unit) {
                             .background(getTypeColor(type), shape = RoundedCornerShape(8.dp))
                             .padding(8.dp)
                     ) {
-                        Text(type, color = Color.White)
+                        Text(
+                            type,
+                            color = Color.White,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                 }

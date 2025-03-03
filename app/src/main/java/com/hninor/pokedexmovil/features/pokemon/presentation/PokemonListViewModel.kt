@@ -73,6 +73,10 @@ class PokemonListViewModel(
     fun loadMorePokemon() {
         if (_isPaginationLoading.value || !_hasMorePages.value || _isRefreshing.value) return
 
+        if (_uiState.value is UiState.Error) {
+            _uiState.value = UiState.Loading
+        }
+
         viewModelScope.launch {
             _isPaginationLoading.value = true
             getPokemonListUseCase(offset, limit)
