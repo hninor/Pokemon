@@ -13,13 +13,12 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 
 class SignInViewModel(application: Application) : AndroidViewModel(application) {
-    private val context = application.applicationContext
 
     private val googleSignInClient: GoogleSignInClient by lazy {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .build()
-        GoogleSignIn.getClient(context, gso)
+        GoogleSignIn.getClient(application, gso)
     }
 
     fun signIn(launcher: ActivityResultLauncher<Intent>) {
@@ -41,7 +40,7 @@ class SignInViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun userIsAlreadyLogged(): Boolean {
-        val account = GoogleSignIn.getLastSignedInAccount(context)
+        val account = GoogleSignIn.getLastSignedInAccount(getApplication())
         return account != null
     }
 }
