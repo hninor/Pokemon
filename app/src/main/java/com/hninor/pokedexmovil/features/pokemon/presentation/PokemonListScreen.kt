@@ -36,6 +36,7 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.hninor.pokedexmovil.R
 import com.hninor.pokedexmovil.core.getTypeColor
@@ -46,10 +47,11 @@ import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
 fun PokemonListScreen(viewModel: PokemonListViewModel, onPokemonClick: (Pokemon) -> Unit) {
 
     val uiState by viewModel.uiState.collectAsState()
-    val isPaginationLoading by viewModel.isPaginationLoading.collectAsState()
+    val hasMorePages by viewModel.hasMorePages.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val filteredPokemonList by viewModel.filteredPokemonList.collectAsState()
     val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val isOffline by viewModel.isOffline.collectAsState()
 
 
     Scaffold(topBar = { TopAppBar(title = { Text("Pokémon List") }) }) {
@@ -57,13 +59,15 @@ fun PokemonListScreen(viewModel: PokemonListViewModel, onPokemonClick: (Pokemon)
             is UiState.Loading -> LoadingScreen()
             is UiState.Success -> PokemonList(
                 filteredPokemonList,
-                isPaginationLoading,
+                hasMorePages,
                 viewModel::loadMorePokemon,
                 searchQuery,
                 viewModel::onSearchQueryChanged,
                 isRefreshing,
                 viewModel::refreshPokemonList,
                 onPokemonClick,
+                isOffline,
+                viewModel::onRetryItem,
                 modifier = Modifier.padding(it)
             )
 
@@ -78,13 +82,15 @@ fun PokemonListScreen(viewModel: PokemonListViewModel, onPokemonClick: (Pokemon)
 @Composable
 fun PokemonList(
     pokemonList: List<Pokemon>,
-    isPaginationLoading: Boolean,
+    hasMorePages: Boolean,
     onLoadMorePokemon: () -> Unit,
     searchQuery: String,
     onSearchQuery: (String) -> Unit,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     onPokemonClick: (Pokemon) -> Unit,
+    isOffline: Boolean,
+    onRetryItem: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -113,20 +119,11 @@ fun PokemonList(
 
                 item(span = { GridItemSpan(2) }) {
                     if (searchQuery.isEmpty()) {
-                        if (isPaginationLoading) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                                    .semantics { testTag = "loading-wheel" },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator(
-                                    color = Color.Red
-                                )
-                            }
-                        } else {
-                            LaunchedEffect(Unit) {
+                        if (hasMorePages) {
+                            if (isOffline) {
+                                ErrorItem(onRetryItem)
+                            } else {
+                                LoadingItem()
                                 onLoadMorePokemon()
                             }
                         }
@@ -139,6 +136,37 @@ fun PokemonList(
 
     }
 
+}
+
+@Composable
+fun LoadingItem() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .semantics { testTag = "loading-wheel" },
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+            color = Color.Red
+        )
+    }
+}
+
+@Composable
+fun ErrorItem(onRetryItem: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("No internet connection", color = Color.Gray, fontSize = 16.sp)
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = {
+            onRetryItem()
+        }) {
+            Text("Retry")
+        }
+    }
 }
 
 

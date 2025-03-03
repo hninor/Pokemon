@@ -50,6 +50,9 @@ class PokemonListViewModel(
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
+    private val _isOffline = MutableStateFlow(false)
+    val isOffline: StateFlow<Boolean> = _isOffline
+
     private var _selectedPokemon = MutableStateFlow<Pokemon?>(null)
     val selectedPokemon: StateFlow<Pokemon?> = _selectedPokemon
 
@@ -91,6 +94,8 @@ class PokemonListViewModel(
                         if (_uiState.value is UiState.Loading) {
                             _uiState.value =
                                 UiState.Error(error.localizedMessage ?: "Unknown error")
+                        } else {
+                            _isOffline.value = true
                         }
                     }
                     _isPaginationLoading.value = false
@@ -122,6 +127,10 @@ class PokemonListViewModel(
 
     fun selectPokemon(pokemon: Pokemon) {
         _selectedPokemon.value = pokemon
+    }
+
+    fun onRetryItem() {
+        _isOffline.value = false
     }
 
     companion object {
