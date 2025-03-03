@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.hninor.pokedexmovil.R
 import com.hninor.pokedexmovil.core.compose.ErrorScreen
 import com.hninor.pokedexmovil.core.compose.LoadingScreen
 import com.hninor.pokedexmovil.core.getTypeColor
@@ -241,6 +243,7 @@ fun PokemonItem(pokemon: Pokemon, onPokemonClick: (Pokemon) -> Unit) {
             AsyncImage(
                 model = pokemon.imageUrl,
                 contentDescription = pokemon.name,
+                placeholder = painterResource(id = R.drawable.pokeball),
                 modifier = Modifier.size(80.dp)
             )
 

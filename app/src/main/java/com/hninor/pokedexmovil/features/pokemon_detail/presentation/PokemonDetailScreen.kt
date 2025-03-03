@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +43,7 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
+import com.hninor.pokedexmovil.R
 import com.hninor.pokedexmovil.core.getTypeColor
 import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
 import com.hninor.pokedexmovil.features.pokemon.domain.model.PokemonStat
@@ -110,6 +112,7 @@ fun PokemonImagesSection(pokemon: Pokemon) {
         AsyncImage(
             model = pokemon.imageUrl,
             contentDescription = "Main Pokémon Image",
+            placeholder = painterResource(id = R.drawable.pokeball),
             modifier = Modifier.size(180.dp)
         )
 

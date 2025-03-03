@@ -93,4 +93,6 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
 }

@@ -21,6 +21,7 @@ import com.hninor.pokedexmovil.features.pokemon.presentation.PokemonListScreen
 import com.hninor.pokedexmovil.core.theme.PokedexMovilTheme
 import com.hninor.pokedexmovil.core.theme.data.ThemeDataStore
 import com.hninor.pokedexmovil.core.theme.presentation.ThemeViewModel
+import com.hninor.pokedexmovil.features.login.presentation.SignInViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +29,7 @@ class MainActivity : ComponentActivity() {
 
         val themeDataStore = ThemeDataStore(applicationContext)
         val themeViewModel = ThemeViewModel(themeDataStore)
+        val signInViewModel = SignInViewModel(application)
 
         setContent {
             val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
@@ -38,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavHost(navController = rememberNavController(), themeViewModel)
+                    AppNavHost(navController = rememberNavController(), themeViewModel, signInViewModel)
                 }
             }
         }
