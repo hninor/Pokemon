@@ -103,13 +103,13 @@ class PokemonListViewModel(
         viewModelScope.launch {
             _isRefreshing.value = true
             offset = 0
-            getPokemonListUseCase(offset, limit).collect { result ->
+            getPokemonListUseCase(offset, limit, true).collect { result ->
                 result.onSuccess { listResult ->
                     _uiState.value = UiState.Success(listResult.pokemonList)
                     _hasMorePages.value = listResult.hasNextPage
                     offset += limit
-                }.onFailure {
-                    //donothing
+                }.onFailure {error ->
+                    _uiState.value = UiState.Error( error.localizedMessage ?: "Error al actualizar")
                 }
                 _isRefreshing.value = false
             }

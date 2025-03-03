@@ -40,6 +40,9 @@ interface PokemonDao {
     @Query("DELETE FROM pokemon_table")
     suspend fun clearAllPokemon()
 
+    @Query("DELETE FROM pokemon_page")
+    suspend fun clearPokemonPages()
+
 
     @Query("DELETE FROM pokemon_stat_table WHERE pokemonId = :pokemonId")
     suspend fun deleteStats(pokemonId: Int)

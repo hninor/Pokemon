@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 class GetPokemonListUseCase(private val repository: PokemonRepository) {
 
-    operator fun invoke(offset: Int, limit: Int): Flow<Result<PokemonListResult>> {
-        return repository.getPokemonList(offset, limit)
+    operator fun invoke(offset: Int, limit: Int, forceRefresh: Boolean = false): Flow<Result<PokemonListResult>> {
+        return repository.getPokemonList(offset, limit, forceRefresh)
     }
 }

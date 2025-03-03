@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface PokemonRepository {
 
-    fun getPokemonList(offset: Int, limit: Int): Flow<Result<PokemonListResult>>
+    fun getPokemonList(offset: Int, limit: Int, forceRefresh: Boolean): Flow<Result<PokemonListResult>>
 }

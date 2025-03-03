@@ -79,6 +79,11 @@ class PokemonLocalDataSource(private val pokemonDao: PokemonDao) {
     suspend fun hasNextPage(offset: Int): Boolean {
         return pokemonDao.hasNextPage(offset) ?: true
     }
+
+    suspend fun deleteAll() {
+        pokemonDao.clearAllPokemon()
+        pokemonDao.clearPokemonPages()
+    }
 }
 
 

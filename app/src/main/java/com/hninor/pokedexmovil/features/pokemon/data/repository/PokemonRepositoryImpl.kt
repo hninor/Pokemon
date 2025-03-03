@@ -16,7 +16,11 @@ class PokemonRepositoryImpl(
 ) :
     PokemonRepository {
 
-    override fun getPokemonList(offset: Int, limit: Int): Flow<Result<PokemonListResult>> = flow {
+    override fun getPokemonList(offset: Int, limit: Int, forceRefresh: Boolean): Flow<Result<PokemonListResult>> = flow {
+
+        if (forceRefresh) {
+            pokemonLocalDataSource.deleteAll()
+        }
 
         val cachedList = pokemonLocalDataSource.getCachedPokemonList(limit, offset).firstOrNull()
 
