@@ -1,6 +1,9 @@
+import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -30,11 +33,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -78,5 +81,14 @@ dependencies {
     val nav_version = "2.8.3"
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    val roomVersion = "2.6.1" // Última versión estable en marzo 2025
+
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion") // Para Java
+    kapt("androidx.room:room-compiler:$roomVersion") // Para Kotlin
+
+    // Room con Flow (necesario si usas Flow en consultas)
+    implementation("androidx.room:room-ktx:$roomVersion")
 
 }

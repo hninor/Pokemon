@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.hninor.pokedexmovil.core.PokedexApplication
+import com.hninor.pokedexmovil.features.pokemon.data.local.PokemonLocalDataSource
 import com.hninor.pokedexmovil.features.pokemon.data.remote.ApiClient
 import com.hninor.pokedexmovil.features.pokemon.data.remote.PokemonRemoteDataSource
 import com.hninor.pokedexmovil.features.pokemon.data.repository.PokemonRepositoryImpl
@@ -83,7 +85,8 @@ class PokemonListViewModel(
                         offset += limit
                     }.onFailure { error ->
                         if (_uiState.value is UiState.Loading) {
-                            _uiState.value = UiState.Error(error.localizedMessage ?: "Unknown error")
+                            _uiState.value =
+                                UiState.Error(error.localizedMessage ?: "Unknown error")
                         }
                     }
                     _isPaginationLoading.value = false
@@ -121,7 +124,12 @@ class PokemonListViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 PokemonListViewModel(
-                    GetPokemonListUseCase(PokemonRepositoryImpl(PokemonRemoteDataSource(ApiClient.create()))),
+                    GetPokemonListUseCase(
+                        PokemonRepositoryImpl(
+                            PokemonRemoteDataSource(ApiClient.create()),
+                            PokemonLocalDataSource(PokedexApplication.database.pokemonDao())
+                        )
+                    ),
                     FilterPokemonUseCase()
                 )
             }

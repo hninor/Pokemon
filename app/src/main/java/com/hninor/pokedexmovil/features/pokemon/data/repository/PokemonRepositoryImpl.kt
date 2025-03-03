@@ -1,15 +1,34 @@
 package com.hninor.pokedexmovil.features.pokemon.data.repository
 
+import com.hninor.pokedexmovil.features.pokemon.data.local.PokemonLocalDataSource
+import com.hninor.pokedexmovil.features.pokemon.data.model.asDomain
 import com.hninor.pokedexmovil.features.pokemon.data.remote.PokemonRemoteDataSource
 import com.hninor.pokedexmovil.features.pokemon.domain.model.PokemonListResult
 import com.hninor.pokedexmovil.features.pokemon.domain.repository.PokemonRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-class PokemonRepositoryImpl(private val pokemonRemoteDataSource: PokemonRemoteDataSource) :
+class PokemonRepositoryImpl(
+    private val pokemonRemoteDataSource: PokemonRemoteDataSource,
+    private val pokemonLocalDataSource: PokemonLocalDataSource
+) :
     PokemonRepository {
 
-    override fun getPokemonList(offset: Int, limit: Int): Flow<Result<PokemonListResult>> {
-        return pokemonRemoteDataSource.getPokemonList(offset, limit)
+    override fun getPokemonList(offset: Int, limit: Int): Flow<Result<PokemonListResult>> = flow {
+        pokemonRemoteDataSource.getPokemonList(offset, limit).collect { result ->
+            if (result.isSuccess) {
+                val pokemonList = result.getOrNull()?.pokemonList ?: emptyList()
+                val hasNextPage = result.getOrNull()?.hasNextPage ?: true
+
+                pokemonLocalDataSource.savePokemonList(pokemonList, hasNextPage, offset)
+
+                emit(Result.success(PokemonListResult(pokemonList.asDomain(), hasNextPage)))
+
+            } else {
+
+            }
+
+        }
     }
 
 }

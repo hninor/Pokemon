@@ -1,6 +1,8 @@
 package com.hninor.pokedexmovil.features.pokemon.data.model
 
 import com.google.gson.annotations.SerializedName
+import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
+import com.hninor.pokedexmovil.features.pokemon.domain.model.PokemonStat
 
 data class PokemonDetailResponse(
     val id: Int,
@@ -33,3 +35,28 @@ data class Stat(val name: String)
 data class AbilityPokemon(val ability: Ability)
 
 data class Ability(val name: String)
+
+
+fun PokemonDetailResponse.asDomain() = Pokemon(
+    id = id,
+    name = name,
+    imageUrl = sprites.other.officialArtwork.front_default,
+    types = types.map { pokemon -> pokemon.type.name },
+    sprites = listOfNotNull(
+        sprites.front_default,
+        sprites.back_default,
+        sprites.other.showdown.front_default,
+        sprites.other.showdown.back_default
+    ),
+    stats = stats.map { pokemon ->
+        PokemonStat(
+            pokemon.stat.name,
+            pokemon.base_stat
+        )
+    },
+    abilities = abilities.map { pokemon -> pokemon.ability.name },
+)
+
+fun List<PokemonDetailResponse>.asDomain(): List<Pokemon> {
+    return map { it.asDomain() }
+}

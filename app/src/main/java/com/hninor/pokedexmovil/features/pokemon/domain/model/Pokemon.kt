@@ -5,7 +5,7 @@ data class Pokemon(
     val name: String,
     val imageUrl: String,
     val types: List<String>,
-    val sprites: List<String>, // Alternate images
+    val sprites: List<String>,
     val stats: List<PokemonStat>,
     val abilities: List<String>,
 )
