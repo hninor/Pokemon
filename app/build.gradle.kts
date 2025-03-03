@@ -91,4 +91,6 @@ dependencies {
     // Room con Flow (necesario si usas Flow en consultas)
     implementation("androidx.room:room-ktx:$roomVersion")
 
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
 }

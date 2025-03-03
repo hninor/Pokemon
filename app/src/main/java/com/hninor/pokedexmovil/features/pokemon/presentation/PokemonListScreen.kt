@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
@@ -40,11 +41,16 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.hninor.pokedexmovil.R
 import com.hninor.pokedexmovil.core.getTypeColor
+import com.hninor.pokedexmovil.core.theme.presentation.ThemeViewModel
 import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PokemonListScreen(viewModel: PokemonListViewModel, onPokemonClick: (Pokemon) -> Unit) {
+fun PokemonListScreen(
+    viewModel: PokemonListViewModel,
+    themeViewModel: ThemeViewModel,
+    onPokemonClick: (Pokemon) -> Unit
+) {
 
     val uiState by viewModel.uiState.collectAsState()
     val hasMorePages by viewModel.hasMorePages.collectAsState()
@@ -53,8 +59,25 @@ fun PokemonListScreen(viewModel: PokemonListViewModel, onPokemonClick: (Pokemon)
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val isOffline by viewModel.isOffline.collectAsState()
 
+    val isDarkTheme by themeViewModel.isDarkTheme.collectAsState()
 
-    Scaffold(topBar = { TopAppBar(title = { Text("Pokémon List") }) }) {
+    Scaffold(topBar = {
+        TopAppBar(
+            title = { Text("Pokémon List") },
+            actions = {
+                // Dark Mode Switch in AppBar
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Dark", fontSize = 14.sp, modifier = Modifier.padding(end = 8.dp))
+                    Switch(
+                        checked = isDarkTheme,
+                        onCheckedChange = { themeViewModel.toggleTheme() }
+                    )
+                }
+            })
+    }) {
         when (uiState) {
             is UiState.Loading -> LoadingScreen()
             is UiState.Success -> PokemonList(
@@ -159,7 +182,7 @@ fun ErrorItem(onRetryItem: () -> Unit) {
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("No internet connection", color = Color.Gray, fontSize = 16.sp)
+        Text("No internet connection", fontSize = 16.sp)
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {
             onRetryItem()

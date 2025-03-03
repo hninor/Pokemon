@@ -7,12 +7,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.hninor.pokedexmovil.core.theme.presentation.ThemeViewModel
 import com.hninor.pokedexmovil.features.pokemon.presentation.PokemonListScreen
 import com.hninor.pokedexmovil.features.pokemon.presentation.PokemonListViewModel
 import com.hninor.pokedexmovil.features.pokemon_detail.presentation.PokemonDetailScreen
 
 @Composable
-fun AppNavHost(navController: NavHostController) {
+fun AppNavHost(navController: NavHostController, themeViewModel: ThemeViewModel) {
     val viewModel: PokemonListViewModel =
         viewModel(factory = PokemonListViewModel.Factory)
 
@@ -20,7 +21,7 @@ fun AppNavHost(navController: NavHostController) {
 
     NavHost(navController, startDestination = "pokemon_list") {
         composable("pokemon_list") {
-            PokemonListScreen(viewModel) {
+            PokemonListScreen(viewModel, themeViewModel) {
                 viewModel.selectPokemon(it)
                 navController.navigate("pokemon_detail")
             }
