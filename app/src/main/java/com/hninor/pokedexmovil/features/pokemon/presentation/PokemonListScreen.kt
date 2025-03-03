@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +38,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.hninor.pokedexmovil.R
+import com.hninor.pokedexmovil.core.compose.ErrorScreen
+import com.hninor.pokedexmovil.core.compose.LoadingScreen
 import com.hninor.pokedexmovil.core.getTypeColor
 import com.hninor.pokedexmovil.core.theme.presentation.ThemeViewModel
 import com.hninor.pokedexmovil.features.pokemon.domain.model.Pokemon
@@ -271,34 +271,7 @@ fun PokemonItem(pokemon: Pokemon, onPokemonClick: (Pokemon) -> Unit) {
     }
 }
 
-@Composable
-fun LoadingScreen(modifier: Modifier = Modifier) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .semantics { testTag = "loading-wheel" },
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(
-            color = Color.Red
-        )
-    }
-}
 
-@Composable
-fun ErrorScreen(message: String, retryAction: () -> Unit) {
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = message, Modifier.padding(16.dp))
-        Button(onClick = { retryAction() }) {
-            Text(text = stringResource(id = R.string.intentar_nuevamente))
-        }
 
-    }
-
-}
 
