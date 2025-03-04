@@ -57,7 +57,7 @@ app/
     │   │       └── feature/
     │   │           ├── data/    # Datasources, Room and Retrofit
     │   │           ├── domain/         # Usecases, more independent layer
-    │   │           └── presentation/         # UI logic
+    │   │           └── presentation/         # UI logic, Screens, Viewmodels
     │   └── res/                       # Resources
 └── proguard-rules.pro        # ProGuard rules
 ```
