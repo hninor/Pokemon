@@ -3,6 +3,22 @@
 Aplicación moderna en Jetpack Compose con paginación incluida para mostrar un listado de pokemons con su respectivo detalle, los endpoints son proporcionados por la PokeAPI
 https://pokeapi.co/api/v2/pokemon/22/
 
+### Pantalla principal
+![listado_pokemons](https://github.com/user-attachments/assets/f8c17ed1-2b39-478f-8447-0b2079475a2b)
+
+### Detalle pokemon
+![detalle](https://github.com/user-attachments/assets/77e47b69-d59e-4015-a900-b314341269c3)
+
+### Soporte modo día/noche
+![modo dark](https://github.com/user-attachments/assets/5fc54bf9-c86c-4b18-b171-d2f53aacb1af)
+
+### Paginación
+![page loading](https://github.com/user-attachments/assets/be12e1bd-a870-4dcb-baaa-a31d04290e4a)
+
+### Manejo de errores
+![error cargando primeros pokemon](https://github.com/user-attachments/assets/294980a3-7d40-4a3d-8e0d-4f3e8b4b07ee)
+
+
 
 ## ✨ Features
 
