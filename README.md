@@ -39,7 +39,7 @@ https://pokeapi.co/api/v2/pokemon/22/
     - Activity Compose
     - Room
     - Retrofit
-    - Flow
+    - Flow(Hot and Cold)
     - MVVM
     - Clean Architecture
   
@@ -103,6 +103,7 @@ The app follows modern Android development best practices:
 - **State Management**: Uses Compose state management with StateFlows
 - **Theme**: Custom Material 3 theme
 - **Component-Based**: Modular UI components for better reusability
+- **Repository**: Use of interface to decouple data layer from domain layer, Repository Design Pattern
 - **Datasource**: Remote and Local, prioritazing cache over remote as data strategy
 - **Declarative paradigm**: Use of flow to give the reactive programation environment, it is used in both UI layer and data layers
 
