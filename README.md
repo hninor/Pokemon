@@ -1,7 +1,6 @@
 # Pokemon API 🔐
 
-Aplicación moderna en Jetpack Compose con paginación incluida para mostrar un listado de pokemons con su respectivo detalle, los endpoints son proporcionados por la PokeAPI
-https://pokeapi.co/api/v2/pokemon/22/
+Aplicación moderna en Jetpack Compose, donde se cargan de a 20 pokemons para ser mostrados en lista, se puede acceder al respectivo detalle haciendo clic sobre cada uno de ellos, la paginación se realiza a medida que se hace el scroll y los endpoints que se consumen son proporcionados por la PokeAPI (https://pokeapi.co/api/v2/pokemon/22/)
 
 ### Pantalla principal
 ![listado_pokemons](https://github.com/user-attachments/assets/f8c17ed1-2b39-478f-8447-0b2079475a2b)
