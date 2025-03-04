@@ -19,10 +19,12 @@ https://pokeapi.co/api/v2/pokemon/22/
    Habilidades.
    Tipo(s) con iconos/colores representativos.
 
-. Funcionalidades Adicionales
-Guardar últimos Pokémon vistos en caché local (Room/SQLite).
-Manejo offline (mostrar datos cacheados si no hay conexión).
-Soporte para modo día/noche
+3. Funcionalidades Adicionales
+   Guardar últimos Pokémon vistos en caché local (Room/SQLite).
+   Manejo offline (mostrar datos cacheados si no hay conexión).
+   Soporte para modo día/noche
+
+4. Inicio de sesión con Google
 
 ## 🛠 Tech Stack
 
