@@ -52,10 +52,10 @@ app/
     │   ├── java/
     │   │   └── com/hninor/pokedexmovil/
     │   │       ├── MainActivity.kt
-    │   │       └── ui/
-    │   │           ├── components/    # Reusable UI components
-    │   │           ├── state/         # State management
-    │   │           └── theme/         # Theme configuration
+    │   │       └── feature/
+    │   │           ├── data/    # Datasources, Room and Retrofit
+    │   │           ├── domain/         # Usecases, more independent layer
+    │   │           └── presentation/         # UI logic
     │   └── res/                       # Resources
 └── proguard-rules.pro        # ProGuard rules
 ```
@@ -64,8 +64,8 @@ app/
 
 ### Prerequisites
 
-- Android Studio Iguana | 2023.2.1 or newer
-- JDK 11 or newer
+- Android Studio Girrafe | 2022.3.1 or newer
+- JDK 17 or newer
 - Android SDK with minimum API level 24
 
 ### Installation
