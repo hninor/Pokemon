@@ -72,7 +72,7 @@ app/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/PasswordRegexChecker.git
+git clone https://github.com/hninor/Pokemon.git
 ```
 
 2. Open the project in Android Studio
@@ -98,29 +98,13 @@ The project uses Gradle with Kotlin DSL for build configuration. To build the pr
 The app follows modern Android development best practices:
 
 - **UI Layer**: Built entirely with Jetpack Compose
-- **State Management**: Uses Compose state management with `remember` and `mutableStateOf`
-- **Theme**: Custom Material 3 theme with Starbucks-inspired color scheme
+- **State Management**: Uses Compose state management with StateFlows
+- **Theme**: Custom Material 3 theme
 - **Component-Based**: Modular UI components for better reusability
+- **Datasource**: Remote and Local, prioritazing cache over remote as data strategy
+- **Declarative paradigm**: Use of flow to give the reactive programation environment, it is used in both UI layer and data layers
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the Apache License 2.0 - see the LICENSE file for details
-
-## 👏 Acknowledgments
-
-- Material Design 3 guidelines
-- Jetpack Compose documentation
-- Starbucks design system for inspiration
 
 ## 📫 Contact
 
-Tamer Sarioglu - [X](https://x.com/tamerthedark)
-                 [LinkedIn](https://www.linkedin.com/in/tamer-sarıoğlu-119742a4/)
+Henry Niño -  [LinkedIn](https://www.linkedin.com/in/hninor)
